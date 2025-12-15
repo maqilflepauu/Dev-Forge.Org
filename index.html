@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DevForge</title>
+<style>
+:root {
+  --bg: #0f1220;
+  --panel: #171a2e;
+  --text: #e7e9ff;
+  --muted: #9aa0ff;
+  --accent: #7c7cff;
+  --accent-hover: #8c8cff;
+  --gradient: linear-gradient(135deg,#7c7cff,#9aa0ff);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+header {
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #23265a;
+  background: var(--panel);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  border-radius: 0 0 16px 16px;
+}
+
+h1 { font-size: 2rem; margin: 0; letter-spacing: 1px; background: var(--gradient); -webkit-background-clip: text; color: transparent; }
+header a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: bold;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: rgba(124,124,255,0.1);
+  transition: 0.3s;
+}
+header a:hover { background: rgba(124,124,255,0.3); }
+
+main {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
+  gap: 24px;
+}
+
+.card {
+  background: var(--panel);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+}
+
+.card h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 1.3rem;
+  background: var(--gradient);
+  -webkit-background-clip: ext;
+  color: transparent;
+}
+
+.card p {
+  flex: 1;
+  color: var(--muted);
+}
+
+.card a {
+  align-self: flex-start;
+  margin-top: 10px;
+  color: var(--text);
+  background: var(--accent);
+  padding: 8px 12px;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.card a:hover { background: var(--accent-hover); }
+
+footer {
+  text-align: center;
+  padding: 24px;
+  color: var(--muted);
+  margin-top: 40px;
+}
+
+@media(max-width:900px){
+  main { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>DevForge</h1>
+  <a href="snippets.html">Explore Snippets →</a>
+</header>
+
+<main>
+  <div class="card">
+    <h3>HTML Snippets</h3>
+    <p>Quick and clean HTML snippets to speed up your workflow.</p>
+    <a href="snippets.html">View HTML Snippets</a>
+  </div>
+  <div class="card">
+    <h3>CSS Snippets</h3>
+    <p>Reusable CSS layouts, animations, and styles ready to go.</p>
+    <a href="snippets.html">View CSS Snippets</a>
+  </div>
+  <div class="card">
+    <h3>JavaScript Snippets</h3>
+    <p>JS snippets from DOM manipulation to handy functions.</p>
+    <a href="snippets.html">View JS Snippets</a>
+  </div>
+  <div class="card">
+    <h3>Git Snippets</h3>
+    <p>Common Git commands and workflows in one place.</p>
+    <a href="snippets.html">View Git Snippets</a>
+  </div>
+</main>
+
+<footer>
+  Built for devs who value clarity over noise.
+</footer>
+
+</body>
+</html>

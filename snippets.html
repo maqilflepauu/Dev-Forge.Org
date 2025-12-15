@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DevForge Snippets</title>
+<style>
+:root{--bg:#0f1220;--panel:#171a2e;--text:#e7e9ff;--muted:#9aa0ff;--accent:#7c7cff;--accent-hover:#8c8cff;}
+body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text);}
+header{padding:20px;background:var(--panel);display:flex;justify-content:space-between;align-items:center;}
+header h2{margin:0;}
+button{padding:8px 12px;border:none;border-radius:12px;background:var(--accent);color:#fff;cursor:pointer;}
+button:hover{background:var(--accent-hover);}
+.layout{display:grid;grid-template-columns:260px 1fr;gap:20px;max-width:1200px;margin:40px auto;}
+.panel{background:var(--panel);padding:16px;border-radius:16px;}
+.cat{padding:10px;border-radius:10px;cursor:pointer;margin-bottom:4px;}
+.cat:hover,.cat.active{background:#101336;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-top:10px;}
+.card{background:#101336;border-radius:14px;padding:14px;box-shadow:0 5px 15px rgba(0,0,0,0.3);}
+.card button{margin-top:8px;width:100%;}
+#createModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);justify-content:center;align-items:center;}
+#modalContent{background:var(--panel);padding:20px;border-radius:16px;max-width:500px;width:90%;}
+textarea,input,select{width:100%;margin-bottom:8px;padding:8px;border-radius:8px;border:none;background:#0c0f22;color:var(--text);}
+@media(max-width:900px){.layout{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<header>
+  <h2>DevForge Snippets</h2>
+  <button id="createBtn">➕ Create Snippet</button>
+</header>
+
+<main class="layout">
+  <aside class="panel">
+    <h3>Categories</h3>
+    <div id="cats"></div>
+  </aside>
+
+  <section class="panel">
+    <h3 id="catTitle">Snippets</h3>
+    <div class="grid" id="snippets"></div>
+  </section>
+</main>
+
+<!-- Create Snippet Modal -->
+<div id="createModal">
+  <div id="modalContent">
+    <h3>Create New Snippet</h3>
+    <input type="text" id="newTitle" placeholder="Title">
+    <select id="newCategory">
+      <option value="HTML">HTML</option>
+      <option value="CSS">CSS</option>
+      <option value="JavaScript">JavaScript</option>
+      <option value="Git">Git</option>
+    </select>
+    <textarea id="newCode" placeholder="Code here"></textarea>
+    <div style="text-align:right;">
+      <button id="saveSnippet">Save</button>
+      <button id="closeModal">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== Prebuilt Snippets =====
+const HTML_SNIPPETS=[
+{title:'HTML Boilerplate', code:'<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Doc</title></head><body></body></html>'},
+{title:'Image Responsive', code:'<img src="img.jpg" style="max-width:100%;height:auto;">'}
+];
+const CSS_SNIPPETS=[
+{title:'Flex Center', code:'.box{display:flex;align-items:center;justify-content:center;}'},
+{title:'Card Shadow', code:'.card{box-shadow:0 10px 30px rgba(0,0,0,.3);border-radius:16px;}'}
+];
+const JS_SNIPPETS=[
+{title:'Query Selector', code:'const el=document.querySelector(".box");'},
+{title:'Click Event', code:'el.addEventListener("click",()=>{console.log("Clicked");});'}
+];
+const GIT_SNIPPETS=[
+{title:'Git Init', code:'git init'},
+{title:'Git Commit', code:'git commit -m "Initial commit"'}
+];
+
+const categories = {HTML:HTML_SNIPPETS,CSS:CSS_SNIPPETS,JavaScript:JS_SNIPPETS,Git:GIT_SNIPPETS};
+const catBox=document.getElementById('cats'),grid=document.getElementById('snippets'),catTitle=document.getElementById('catTitle');
+
+// ===== Load saved snippets =====
+let custom=JSON.parse(localStorage.getItem('customSnippets'))||{HTML:[],CSS:[],JavaScript:[],Git:[]};
+Object.keys(custom).forEach(cat=>categories[cat]=[...categories[cat],...custom[cat]]);
+
+// ===== Render Categories =====
+Object.keys(categories).forEach((cat,i)=>{
+  const div=document.createElement('div');
+  div.className='cat'+(i===0?' active':''); div.textContent=cat;
+  div.onclick=()=>{
+    document.querySelectorAll('.cat').forEach(c=>c.classList.remove('active'));
+    div.classList.add('active');
+    renderCat(cat);
+  };
+  catBox.appendChild(div);
+});
+
+// ===== Render Snippets =====
+function renderCat(name){
+  catTitle.textContent=name+' Snippets';
+  grid.innerHTML='';
+  categories[name].forEach(s=>{
+    const card=document.createElement('div'); card.className='card';
+    card.innerHTML=`<strong>${s.title}</strong><pre>${s.code}</pre><button>Copy</button>`;
+    card.querySelector('button').onclick=()=>navigator.clipboard.writeText(s.code);
+    grid.appendChild(card);
+  });
+}
+
+// ===== Modal =====
+const createBtn=document.getElementById('createBtn'),modal=document.getElementById('createModal'),closeModal=document.getElementById('closeModal'),saveBtn=document.getElementById('saveSnippet');
+createBtn.onclick=()=>modal.style.display='flex';
+closeModal.onclick=()=>modal.style.display='none';
+saveBtn.onclick=()=>{
+  const title=document.getElementById('newTitle').value.trim();
+  const code=document.getElementById('newCode').value.trim();
+  const cat=document.getElementById('newCategory').value;
+  if(!title||!code) return alert('Title and code required!');
+  const newS={title,code}; categories[cat].push(newS);
+  let saved=JSON.parse(localStorage.getItem('customSnippets'))||{HTML:[],CSS:[],JavaScript:[],Git:[]};
+  saved[cat].push(newS); localStorage.setItem('customSnippets',JSON.stringify(saved));
+  renderCat(cat);
+  document.getElementById('newTitle').value=''; document.getElementById('newCode').value=''; modal.style.display='none';
+};
+
+// ===== Initial render =====
+renderCat(Object.keys(categories)[0]);
+</script>
+</body>
+</html>
